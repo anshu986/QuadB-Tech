@@ -20,12 +20,14 @@ function TodoList() {
   const [newTask, setNewTask] = useState("");
   const [showList, setshowList] = useState(false);
 
+  // Effect to store todoList in local storage
   useEffect(() => {
     if (todoList.length > 0) {
       localStorage.setItem("todoList", JSON.stringify(todoList));
     }
   }, [todoList]);
 
+  // Effect to fetch todoList from local storage on initial load
   useEffect(() => {
     const localTodoList = JSON.parse(localStorage.getItem("todoList"));
     if (localTodoList) {
@@ -33,6 +35,7 @@ function TodoList() {
     }
   }, []);
 
+  // Function to add a new todo item
   const handleAddTodo = (task) => {
     if (task.trim().length === 0) {
       alert("Please enter a task");
@@ -43,6 +46,7 @@ function TodoList() {
     }
   };
 
+  // Function to update an existing todo item
   const handleUpdateToDoList = (id, task) => {
     if (task.trim().length === 0) {
       alert("Please enter a task");
@@ -52,16 +56,19 @@ function TodoList() {
     }
   };
 
+  // Function to delete a todo item
   const handleDeleteToDo = (id) => {
     const updatedToDoList = todoList.filter((todo) => todo.id != id);
     dispatch(setTodoList(updatedToDoList));
     localStorage.setItem("todoList", JSON.stringify(updatedToDoList));
   };
 
+  // Function to handle sorting of todo items
   function handleSort(sortCriteria) {
     dispatch(sortTodo(sortCriteria));
   }
 
+  // Filter the todo list based on the sort criteria
   const sortToDoList = todoList.filter((todo) => {
     if (sortCriteria === "All") return true;
     if (sortCriteria === "Completed" && todo.completed) return true;
@@ -69,6 +76,7 @@ function TodoList() {
     return false;
   });
 
+  // Function to toggle the completed status of a todo item
   const handleToggleCompleted = (id) => {
     dispatch(toggleCompleted({ id }));
   };
@@ -76,6 +84,8 @@ function TodoList() {
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full md:w-[75%]">
+        {/* Modal for adding/updating todo items */}
+        {/* show the add a task modal only when showModal is set to true that means we have clicked on add a task*/}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-8 rounded-md">
@@ -130,6 +140,7 @@ function TodoList() {
           </div>
         )}
 
+        {/* Display todo list */}
         <div className="flex items-center justify-center flex-col">
           {todoList.length === 0 ? (
             <div className="mb-6">
@@ -142,6 +153,7 @@ function TodoList() {
             </div>
           ) : (
             <>
+                {/* show list only when show list is set to true that means we have clicked on view list */}
               {showList && (
                 <div className="container mx-auto mt-6">
                   <div className="flex justify-center mb-6">
@@ -166,14 +178,16 @@ function TodoList() {
                         key={todo.id}
                         className="flex items-center justify-between mb-6 bg-gray-200 rounded-md p-4"
                       >
+                       { /*line through signifies the task in completed*/}
                         <div
                           className={`${
                             todo.completed
-                              ? "line-through text-green-500"
+                              ? "line-through text-green-500"  
                               : "text-orange-500"
                           }`}
+                          
                           onClick={() => {
-                            handleToggleCompleted(todo.id);
+                            handleToggleCompleted(todo.id);  
                           }}
                         >
                           {todo.task}
